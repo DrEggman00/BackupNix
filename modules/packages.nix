@@ -30,6 +30,6 @@
         nerd-fonts.profont
         clang
         nodejs
-        make
+        gnumake
    ];
 }
