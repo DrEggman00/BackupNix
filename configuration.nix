@@ -8,49 +8,16 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./modules/network.nix
+      ./modules/boot.nix
+      ./modules/packages.nix
+      ./modules/services.nix
+      ./modules/users.nix
+      ./modules/nvidia.nix
     ];
-
-  # Use the systemd-boot EFI boot loader.
-  #boot.loader.systemd-boot.enable = true;
-  #boot.loader.efi.canTouchEfiVariables = true;
-
-  boot.loader = {
-	efi = {
-		canTouchEfiVariables = true;
-		efiSysMountPoint = "/boot/";
-		};
-	grub = {
-		efiSupport = true;
-		device = "nodev";
-		};
-	};
-  # Use latest kernel.
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  # networking.hostName = "nixos"; # Define your hostname.
-
-  # Configure network connections interactively with nmcli or nmtui.
-  networking.networkmanager.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/Araguaina";
-
-  hardware.graphics.enable = true;
-
-  services.xserver.videoDrivers = [ "nvidia" ];
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = false;   # opcional
-    nvidiaSettings = true;            # opcional
-    open = false;                     # GTX 1650 NÃO suporta o open kernel module
-  };
-
-
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "pt_BR.UTF-8";
@@ -84,68 +51,8 @@
      pulse.enable = true;
    };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  services.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-   users.users.dr = {
-     isNormalUser = true;
-     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-     packages = with pkgs; [
-       tree
-     ];
-   };
-
-  # programs.firefox.enable = true;
-
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
-   environment.systemPackages = with pkgs; [
-     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-     wget
-     firefox
-     nano
-     kdePackages.konsole
-     htop
-     zsh
-     git
-     bitwarden-desktop
-     telegram-desktop
-     vscodium
-     fastfetch
-     btop
-     unrar
-     p7zip
-     unzip
-     ubuntu-sans
-     profont
-     nerd-fonts.profont
-     clang
-     nodejs
-   ];
-  #hardware.graphics.enable = true;
-  #services.xserver.videoDrivers = ["nvidia"];
-  #hardware.nvidia.open = true;
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
+  
   # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
