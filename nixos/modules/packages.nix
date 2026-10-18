@@ -5,6 +5,7 @@
 
   environment.systemPackages = with pkgs; [
     # Essenciais
+    adwaita-icon-theme
     vim
     neovim
     wget
