@@ -11,23 +11,10 @@
     ];
 
   # Use the systemd-boot EFI boot loader.
-  #boot.loader.systemd-boot.enable = true;
-  #boot.loader.efi.canTouchEfiVariables = true;
-  hardware.bluetooth.enable = true;
-  boot.loader = {
-	efi = {
-		canTouchEfiVariables = true;
-		efiSysMountPoint = "/boot/";
-		};
-	grub = {
-		efiSupport = true;
-		device = "nodev";
-		};
-	};
-  # Use latest kernel.
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  # networking.hostName = "nixos"; # Define your hostname.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  #boot.kernelPackages = pkgs.linuxPackages_latest;
+  networking.hostName = "computador"; # Define your hostname.
 
   # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true;
@@ -35,42 +22,54 @@
   # Set your time zone.
   time.timeZone = "America/Araguaina";
 
-  hardware.graphics.enable = true;
-
-  services.xserver.videoDrivers = [ "nvidia" ];
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = false;   # opcional
-    nvidiaSettings = true;            # opcional
-    open = false;                     # GTX 1650 NÃO suporta o open kernel module
-  };
-
-
-
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "pt_BR.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  #   useXkbConfig = true; # use xkb.options in tty.
-  # };
+  console = {
+     font = "Lat2-Terminus16";
+     #keyMap = "br-abnt2";
+     useXkbConfig = true; # use xkb.options in tty.
+   };
 
   # Enable the X11 windowing system.
-  # services.xserver.enable = true;
   services.xserver.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.displayManager.sddm.wayland.enable = true;
+
+  hardware.bluetooth = {
+  	enable = true;
+  	powerOnBoot = false;
+  };
+
+  #KDE
   services.desktopManager.plasma6.enable = true;
+  
+
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;   # opcional, remova se usa X11
+    theme = "sddm-astronaut-theme";
+    extraPackages = with pkgs.kdePackages; [
+      qtmultimedia
+      qtsvg
+      qtvirtualkeyboard
+    ];
+  };
 
   
 
+
+  # Enable the GNOME Desktop Environment.
+  #services.displayManager.gdm.enable = true;
+  #services.desktopManager.gnome.enable = true;
+  
+
   # Configure keymap in X11
-  # services.xserver.xkb.layout = "us";
+   services.xserver.xkb = { 
+	layout = "br"; 
+ 	variant = "abnt2";
+  };
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
@@ -81,52 +80,111 @@
   # OR
    services.pipewire = {
      enable = true;
+     alsa.enable = true;
      pulse.enable = true;
    };
 
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-   users.users.dr = {
-     isNormalUser = true;
-     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-     packages = with pkgs; [
-       tree
-     ];
+  
+  # Graphics
+  hardware.graphics.enable = true;
+  services.xserver.videoDrivers = ["nvidia"];
+  hardware.nvidia = {
+	modesetting.enable = true;
+	open = true;
+	powerManagement.enable = true;
+	prime = {
+		offload.enable = true;
+		offload.enableOffloadCmd = true;
+		intelBusId = "PCI:0:2:0";
+		nvidiaBusId = "PCI:1:0:0";
+		};
+	};
+  zramSwap.enable = true;
+  
+  hardware.cpu.intel.updateMicrocode = true;
+  services.fstrim.enable = true;
+  services.btrfs.autoScrub.enable = true;
+  
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  
+  nixpkgs.config = {
+	allowUnfree = true;
+  };
+ 
+  services.mysql = {
+	enable = true;
+	package = pkgs.mariadb;
+	ensureDatabases = [ "ortoo" ];
+	ensureUsers = [
+	   {
+		name = "dr";
+		ensurePermissions = {
+		   "ortoo.*" = "ALL PRIVILEGES";
+		};
+	    }
+	];
    };
 
-  # programs.firefox.enable = true;
+
+
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  programs.fish.enable = true; 
+  users.users.dr = {
+     isNormalUser = true;
+     shell = pkgs.fish;
+     extraGroups = [ "wheel" "networkmanager" "video" "audio" ]; # Enable ‘sudo’ for the user.
+   }; 
+
+   
+
+   programs.firefox.enable = true;
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
    environment.systemPackages = with pkgs; [
      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
      wget
-     firefox
-     nano
-     kdePackages.konsole
-     htop
-     zsh
      git
-     bitwarden-desktop
-     yaru-theme
-     telegram-desktop
-     vscodium
+     neovim
+     kitty
      fastfetch
-     btop
-     unrar
-     p7zip
-     unzip
-     ubuntu-sans
-     profont
-     nerd-fonts.profont
+     google-chrome
+     bitwarden-desktop
      clang
-     nodejs
+     audacity
+     blender
+     ffmpeg
+     gcc
+     gdb
+     gimp
+     libreoffice
+     nodejs_26
+     obs-studio
+     opencv
+     p7zip
+     php
+     rustc
+     rust-analyzer
+     cargo
+     telegram-desktop
+     wireshark
+     retroarch
+     vscode
+     pcsx2
+     virt-manager
+     qemu
+     libvirt
+     aseprite
+     starship
+     eza
+     codex
+     mariadb
+     gum
+     sddm-astronaut
    ];
-  #hardware.graphics.enable = true;
-  #services.xserver.videoDrivers = ["nvidia"];
-  #hardware.nvidia.open = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -139,7 +197,7 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+   services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -169,7 +227,6 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "25.11"; # Did you read the comment?
-  nixpkgs.config.allowUnfree = true;
-}
+  system.stateVersion = "26.05"; # Did you read the comment?
 
+}
