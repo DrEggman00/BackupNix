@@ -16,5 +16,7 @@
     ./services.nix
     ./users.nix
     ./packages.nix
+    ./steam.nix
+    ./virtual.nix
   ];
 }
