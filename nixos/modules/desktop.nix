@@ -5,6 +5,7 @@ let
     embeddedTheme = "black_hole";
     themeConfig = {
       Background = "${../wallpapers/florest.jpg}";
+      Font = "ESPACION";
     };
   };
 in
@@ -25,6 +26,12 @@ in
     ];
   };
 
+   fonts.packages = [
+    (pkgs.runCommand "espacion-font" { } ''
+      mkdir -p $out/share/fonts/truetype
+      cp ${../fonts}/*.ttf $out/share/fonts/truetype/
+    '')
+  ];
   environment.systemPackages = [ astronaut ];
 
   # GNOME

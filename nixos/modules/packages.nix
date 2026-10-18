@@ -5,6 +5,7 @@
 
   environment.systemPackages = with pkgs; [
     # Essenciais
+    unzip
     adwaita-icon-theme
     vim
     neovim
@@ -53,7 +54,6 @@
     libvirt
 
     # Extras
-    gum 
-    sddm-astronaut
+    gum
   ];
 }
