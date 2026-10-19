@@ -34,6 +34,7 @@
     starship
     eza
     p7zip
+    htop
 
     # Desenvolvimento
     vscode
