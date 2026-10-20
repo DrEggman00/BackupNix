@@ -35,8 +35,10 @@
     eza
     p7zip
     htop
+    xournalpp
 
     # Desenvolvimento
+    krita
     vscode
     codex
     clang
