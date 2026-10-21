@@ -22,10 +22,16 @@ if status is-interactive
     alias clear "printf '\033[2J\033[3J\033[1;1H'"
     alias celar "printf '\033[2J\033[3J\033[1;1H'"
     alias claer "printf '\033[2J\033[3J\033[1;1H'"
-    alias i "sudo nano /etc/nixos/configuration.nix && sudo nixos-rebuild switch"
+    alias i "sudo nano /etc/nixos/modules/packages.nix && sudo nixos-rebuild switch"
+    alias nixos "cd /etc/nixos/"
     alias makee "sudo nano /etc/nixos/configuration.nix"
-    alias cfish "nano ~/.config/fish/config.fish"
+    alias cfish "nvim ~/.config/fish/config.fish"
     alias c clear
+    alias fast fastfetch
+    alias f "fastfetch --logo none"
+    alias depclean "sudo nix-collect-gabarge -d"
+    alias nixmod "cd /etc/nixos/modules"
+    alias usedir "sudo nano /etc/nixos/modules/packages.nix"
     alias up "sudo nixos-rebuild switch --upgrade"
     if test "$TERM" != linux
         alias ls 'eza --icons=auto'
